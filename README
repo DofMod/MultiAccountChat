@@ -1,0 +1,16 @@
+I. Generic install:
+
+1) Create a "libs" directory in the "MultiAccountChat" directory
+2) Add the dofus module library in this new directory
+3) Compile the module
+
+II. Linux install:
+
+$cd MultiAccountChat
+$mkdir libs
+$cp [path of your library]/modules-library-2.3.5.swc libs
+$mxmlc -output MultiAccountChat.swf -source-path src -compiler.library-path+=libs/modules-library-2.3.5.swc -keep-as3-metadata Api Module DevMode -- src/MultiAccountChat.as
+
+III. Other informations:
+
+http://forum.dofus.com/fr/1129-documentation/461441-lire
