@@ -42,13 +42,19 @@ package {
 			// modMultiAccountManager.unregister(sendPVKey);
 		}
 		
-		public function sendPV(srcId:int, srcName:String, dstName:String, message:String) : void
+		public function sendPV(
+			srcId:int,
+			srcName:String,
+			dstName:String,
+			message:String
+			) : void
 		{
 			if (playerApi.getPlayedCharacterInfo().id == srcId)
 				return;
 			
 			sysApi.sendAction(new FightOutput(
-					"de <b>" + srcName + "</b> à <b>" + dstName + "</b>: " + message,
+					"de <b>" + srcName + "</b>" +
+					" à <b>" + dstName + "</b>: " + message,
 					ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE
 					));
 		}
@@ -74,7 +80,13 @@ package {
 		{
 			if (channel == ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE)
 			{
-				modMultiAccountManager.sendOther(sendPVKey, characterId, characterName, playerApi.getPlayedCharacterInfo().name, message);
+				modMultiAccountManager.sendOther(
+					sendPVKey,
+					characterId,
+					characterName,
+					playerApi.getPlayedCharacterInfo().name,
+					message
+					);
 			}
 		}
 		
