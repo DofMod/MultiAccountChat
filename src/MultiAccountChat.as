@@ -36,7 +36,10 @@ package {
 		
 		public function unload() : void
 		{
-			modMultiAccountManager.unregister(sendPVKey);
+			// hack: Actually the module management system doesn't seem to track
+			// module dependencies when unload modules, so we need this test
+			
+			// modMultiAccountManager.unregister(sendPVKey);
 		}
 		
 		public function sendPV(srcId:int, srcName:String, dstName:String, message:String) : void
