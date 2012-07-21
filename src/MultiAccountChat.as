@@ -80,15 +80,14 @@ package
 		/**
 		 * Process and display the message in the chat module.
 		 * 
-		 * @param	infos	...
+		 * @param	senderId	Sender index.
+		 * @param	receiverId	Receiver index.
+		 * @param	message	Message to display.
+		 * @param	objects	Objects' links in the message.
 		 */
-		public function sendPV(infos:Object):void
-		{
-			var objects:Vector.<Object> = infos.objects;
-			var message:String = infos.message;
-			var senderId:int = infos.senderId;
-			var receiverId:int = infos.receiverId;
-			
+		public function sendPV(senderId:int, receiverId:int, message:String,
+			objects:Vector.<Object>):void
+		{	
 			if (playerApi.getPlayedCharacterInfo().id == senderId)
 				return;
 			
@@ -147,19 +146,14 @@ package
 			if (receiverId == 0)
 				receiverName = playerApi.getPlayedCharacterInfo().name;
 			
-			var infos:Object = new Object();
-			infos.senderId = senderId;
-			infos.receiverId = receiverId;
-			infos.message = "de <b>" + senderName + "</b> à <b>" + receiverName
+			message = "de <b>" + senderName + "</b> à <b>" + receiverName
 				+ "</b>: " + message;
 			
-			var objectsTmp:Vector.<ItemWrapper> = new Vector.<ItemWrapper>();
+			var objsTmp:Vector.<ItemWrapper> = new Vector.<ItemWrapper>();
 			for each (var item:ItemWrapper in objects)
-				objectsTmp.push(item);
+				objsTmp.push(item);
 			
-			infos.objects = objectsTmp;
-			
-			modMAM.sendOther(sendPVKey, infos);
+			modMAM.sendOther(sendPVKey, senderId, receiverId, message, objsTmp);
 		}
 		
 		//::///////////////////////////////////////////////////////////
