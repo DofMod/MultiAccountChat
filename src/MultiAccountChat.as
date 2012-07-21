@@ -13,6 +13,11 @@ package
 	import d2hooks.GameStart;
 	import flash.display.Sprite;
 	
+	/**
+	 * The main class of the module. Dispatch the dialogues through the different accounts.
+	 * 
+	 * @author Relena
+	 */
 	public class MultiAccountChat extends Sprite
 	{
 		//::///////////////////////////////////////////////////////////
@@ -20,12 +25,24 @@ package
 		//::///////////////////////////////////////////////////////////
 		
 		// APIs
+		/**
+		 * @private
+		 */
 		public var sysApi:SystemApi; // addHook, sendAction
+		/**
+		 * @private
+		 */
 		public var playerApi:PlayedCharacterApi; // GetPlayedCharacterInfo
+		/**
+		 * @private
+		 */
 		public var chatApi:ChatApi; // newChatItem
 		
 		// Components
-		[Module(name="MultiAccountManager")]
+		[Module(name = "MultiAccountManager")]
+		/**
+		 * MultiAccountManager module reference.
+		 */
 		public var modMAM:Object; // modMultiAccountManager
 		
 		// Constants
@@ -36,6 +53,9 @@ package
 		//::// Methods
 		//::///////////////////////////////////////////////////////////
 		
+		/**
+		 * Initialize the module.
+		 */
 		public function main():void
 		{
 			sysApi.addHook(GameStart, onGameStart);
@@ -46,6 +66,9 @@ package
 				ChatServerCopyWithObject, onChatServerCopyWithObjects);
 		}
 		
+		/**
+		 * Uninitialize the module.
+		 */
 		public function unload():void
 		{
 			// hack: Actually the module management system doesn't seem to track
@@ -54,6 +77,11 @@ package
 			// modMAM.unregister(sendPVKey);
 		}
 		
+		/**
+		 * Process and display the message in the chat module.
+		 * 
+		 * @param	infos	...
+		 */
 		public function sendPV(infos:Object):void
 		{
 			var objects:Vector.<Object> = infos.objects;
@@ -89,6 +117,21 @@ package
 				ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE));
 		}
 		
+		/**
+		 * Process and send the message to the different accounts.
+		 * 
+		 * @param	channel	display channel index.
+		 * @param	senderId	Sender index.
+		 * @param	senderName	Sender name.
+		 * @param	receiverId	Receiver index.
+		 * @param	receiverName	Receiver name.
+		 * @param	message	Message to display.
+		 * @param	timestamp	Timestamp of reception.
+		 * @param	fingerprint	Message fingerprint.
+		 * @param	objects	Objects' links in the message.
+		 * @param	isSpeakingItem ?
+		 * @param	isAdmin	?
+		 */
 		private function processLine(channel:int, senderId:int,
 			senderName:String, receiverId:int, receiverName:String,
 			message:String, timestamp:Number, fingerprint:String,
@@ -123,12 +166,26 @@ package
 		//::// Events
 		//::///////////////////////////////////////////////////////////
 		
+		/**
+		 * GameStart event handler. Register the functions' keys.
+		 */
 		private function onGameStart():void
 		{
 			modMAM.register(sendPVKey, this.sendPV);
 		}
 		
-		// Receive message without object
+		/**
+		 * ChatServer event handler. Follow message to <code>processLine</code>
+		 * function.
+		 * 
+		 * @param	channel	display channel index.
+		 * @param	senderId	Sender index.
+		 * @param	senderName	Sender name.
+		 * @param	message	Message to display.
+		 * @param	timestamp	Timestamp of reception.
+		 * @param	fingerprint	Message fingerprint.
+		 * @param	isAdmin	?
+		 */
 		private function onChatServer(channel:int, senderId:int,
 			senderName:String, message:String, timestamp:Number,
 			fingerprint:String, isAdmin:Boolean):void
@@ -137,7 +194,18 @@ package
 				timestamp, fingerprint, null, false, isAdmin);
 		}
 		
-		// Receive message with object(s)
+		/**
+		 * ChatServerWithObjects event handler. Follow message to
+		 * <code>processLine</code> function.
+		 * 
+		 * @param	channel	display channel index.
+		 * @param	senderId	Sender index.
+		 * @param	senderName	Sender name.
+		 * @param	message	Message to display.
+		 * @param	timestamp	Timestamp of reception.
+		 * @param	fingerprint	Message fingerprint.
+		 * @param	objects	Objects' links in the message.
+		 */
 		private function onChatServerWithObjects(channel:int, senderId:int,
 			senderName:String, message:String, timestamp:Number,
 			fingerprint:String, objects:Object):void
@@ -146,7 +214,17 @@ package
 				timestamp, fingerprint, objects);
 		}
 		
-		// Send message without object
+		/**
+		 * ChatServerCopy event handler. Follow message to
+		 * <code>processLine</code> function.
+		 * 
+		 * @param	channel	display channel index.
+		 * @param	receiverName	Receiver name.
+		 * @param	message	Message to display.
+		 * @param	timestamp	Timestamp of reception.
+		 * @param	fingerprint	Message fingerprint.
+		 * @param	receiverId	Receiver index.
+		 */
 		private function onChatServerCopy(channel:int, receiverName:String,
 			message:String, timestamp:Number, fingerprint:String,
 			receiverId:int):void
@@ -155,7 +233,18 @@ package
 				timestamp, fingerprint);
 		}
 		
-		// Send message with object(s)
+		/**
+		 * ChatServerCopyWithObjects event handler. Follow message to
+		 * <code>processLine</code> function.
+		 * 
+		 * @param	channel	display channel index.
+		 * @param	receiverName	Receiver name.
+		 * @param	message	Message to display.
+		 * @param	timestamp	Timestamp of reception.
+		 * @param	fingerprint	Message fingerprint.
+		 * @param	receiverId	Receiver index.
+		 * @param	objects	Objects' links in the message.
+		 */
 		private function onChatServerCopyWithObjects(channel:int,
 			receiverName:String, message:String, timestamp:Number,
 			fingerprint:String, receiverId:int, objects:Object):void
@@ -168,6 +257,11 @@ package
 		//::// Debug
 		//::///////////////////////////////////////////////////////////
 		
+		/**
+		 * Log message.
+		 *
+		 * @param	str	The string to display.
+		 */
 		private function traceDofus(str:String):void
 		{
 			sysApi.log(2, str);

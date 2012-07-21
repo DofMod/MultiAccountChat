@@ -168,6 +168,7 @@ pip-log.txt
 ## Divers
 #############
 *.as3proj
+*.docproj
 *.lnk
 *.swf
 libs/
