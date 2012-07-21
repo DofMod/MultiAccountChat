@@ -1,4 +1,5 @@
-package {
+package
+{
 	import d2actions.FightOutput;
 	import d2api.ChatApi;
 	import d2api.PlayedCharacterApi;
@@ -11,7 +12,7 @@ package {
 	import d2hooks.ChatServerWithObject;
 	import d2hooks.GameStart;
 	import flash.display.Sprite;
-
+	
 	public class MultiAccountChat extends Sprite
 	{
 		//::///////////////////////////////////////////////////////////
@@ -24,8 +25,8 @@ package {
 		public var chatApi:ChatApi; // newChatItem
 		
 		// Components
-		[Module (name="MultiAccountManager")]
-		public var modMAM : Object; // modMultiAccountManager
+		[Module(name="MultiAccountManager")]
+		public var modMAM:Object; // modMultiAccountManager
 		
 		// Constants
 		private const sendPVKey:String = "mac_sendPV"
@@ -35,24 +36,25 @@ package {
 		//::// Public methods
 		//::///////////////////////////////////////////////////////////
 		
-		public function main() : void
+		public function main():void
 		{
 			sysApi.addHook(GameStart, onGameStart);
 			sysApi.addHook(ChatServer, onChatServer);
 			sysApi.addHook(ChatServerWithObject, onChatServerWithObjects);
 			sysApi.addHook(ChatServerCopy, onChatServerCopy);
-			sysApi.addHook(ChatServerCopyWithObject, onChatServerCopyWithObjects);
+			sysApi.addHook(
+				ChatServerCopyWithObject, onChatServerCopyWithObjects);
 		}
 		
-		public function unload() : void
+		public function unload():void
 		{
 			// hack: Actually the module management system doesn't seem to track
 			// module dependencies when unload modules, so we need this test
-			
+		
 			// modMAM.unregister(sendPVKey);
 		}
 		
-		public function sendPV(infos:Object) : void
+		public function sendPV(infos:Object):void
 		{
 			var objects:Vector.<Object> = infos.objects;
 			var message:String = infos.message;
@@ -61,7 +63,7 @@ package {
 			
 			if (playerApi.getPlayedCharacterInfo().id == senderId)
 				return;
-				
+			
 			if (playerApi.getPlayedCharacterInfo().id == receiverId)
 				return;
 			
@@ -83,92 +85,60 @@ package {
 			// */
 			
 			sysApi.sendAction(new FightOutput(
-					message,
-					ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE
-					));
+				message,
+				ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE));
 		}
-
+		
 		//::///////////////////////////////////////////////////////////
 		//::// Events
 		//::///////////////////////////////////////////////////////////
 		
-		private function onGameStart() : void
+		private function onGameStart():void
 		{
 			modMAM.register(sendPVKey, this.sendPV);
 		}
 		
 		// Receive message without object
-		private function onChatServer(
-				channel:int,
-				senderId:int,
-				senderName:String,
-				message:String,
-				timestamp:Number,
-				fingerprint:String,
-				isAdmin:Boolean
-				) : void
+		private function onChatServer(channel:int, senderId:int,
+			senderName:String, message:String, timestamp:Number,
+			fingerprint:String, isAdmin:Boolean):void
 		{
 			processLine(channel, senderId, senderName, 0, "", message,
 				timestamp, fingerprint, null, false, isAdmin);
 		}
 		
 		// Receive message with object(s)
-		private function onChatServerWithObjects(
-				channel:int,
-				senderId:int,
-				senderName:String,
-				message:String,
-				timestamp:Number,
-				fingerprint:String,
-				objects:Object
-				) : void
+		private function onChatServerWithObjects(channel:int, senderId:int,
+			senderName:String, message:String, timestamp:Number,
+			fingerprint:String, objects:Object):void
 		{
 			processLine(channel, senderId, senderName, 0, "", message,
 				timestamp, fingerprint, objects);
 		}
 		
 		// Send message without object
-		private function onChatServerCopy(
-				channel:int,
-				receiverName:String,
-				message:String,
-				timestamp:Number,
-				fingerprint:String,
-				receiverId:int
-				) : void
+		private function onChatServerCopy(channel:int, receiverName:String,
+			message:String, timestamp:Number, fingerprint:String,
+			receiverId:int):void
 		{
 			processLine(channel, 0, "", receiverId, receiverName, message,
 				timestamp, fingerprint);
 		}
 		
 		// Send message with object(s)
-		private function onChatServerCopyWithObjects(
-				channel:int,
-				receiverName:String,
-				message:String,
-				timestamp:Number,
-				fingerprint:String,
-				receiverId:int,
-				objects:Object
-				) : void
+		private function onChatServerCopyWithObjects(channel:int,
+			receiverName:String, message:String, timestamp:Number,
+			fingerprint:String, receiverId:int, objects:Object):void
 		{
 			processLine(channel, 0, "", receiverId, receiverName, message,
 				timestamp, fingerprint, objects);
 		}
 		
-		private function processLine(
-				channel:int,
-				senderId:int,
-				senderName:String,
-				receiverId:int,
-				receiverName:String,
-				message:String,
-				timestamp:Number,
-				fingerprint:String,
-				objects:Object = null,
-				isSpeakingItem:Boolean = false,
-				siAdmin:Boolean = false
-				) : void
+		private function processLine(channel:int, senderId:int,
+			senderName:String, receiverId:int, receiverName:String,
+			message:String, timestamp:Number, fingerprint:String,
+			objects:Object = null, isSpeakingItem:Boolean = false,
+			isAdmin:Boolean = false):void
 		{
 			if (channel != ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE)
 				return;
@@ -193,13 +163,12 @@ package {
 			
 			modMAM.sendOther(sendPVKey, infos);
 		}
-			
 		
 		//::///////////////////////////////////////////////////////////
 		//::// Debug
 		//::///////////////////////////////////////////////////////////
 		
-		private function traceDofus(str:String) : void
+		private function traceDofus(str:String):void
 		{
 			sysApi.log(2, str);
 		}
