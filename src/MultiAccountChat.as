@@ -146,8 +146,11 @@ package
 			if (receiverId == 0)
 				receiverName = playerApi.getPlayedCharacterInfo().name;
 			
-			message = "de <b>" + senderName + "</b> à <b>" + receiverName
-				+ "</b>: " + message;
+			message = "de {player," + senderName + "," + senderId + ","
+				+ timestamp + "," + fingerprint + "," + channel + "::<b>"
+				+ senderName + "</b>} à {player," + receiverName + ","
+				+ receiverId + "," + timestamp + "," + fingerprint + ","
+				+ channel + "::<b>" + receiverName + "</b>}: " + message;
 			
 			var objsTmp:Vector.<ItemWrapper> = new Vector.<ItemWrapper>();
 			for each (var item:ItemWrapper in objects)
