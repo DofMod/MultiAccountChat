@@ -3,6 +3,7 @@ package {
 	import d2api.ChatApi;
 	import d2api.PlayedCharacterApi;
 	import d2api.SystemApi;
+	import d2data.ItemWrapper;
 	import d2enums.ChatActivableChannelsEnum;
 	import d2hooks.ChatServer;
 	import d2hooks.ChatServerCopy;
@@ -20,7 +21,7 @@ package {
 		// APIs
 		public var sysApi:SystemApi; // addHook, sendAction
 		public var playerApi:PlayedCharacterApi; // GetPlayedCharacterInfo
-		public var chatApi:ChatApi; //
+		public var chatApi:ChatApi; // newChatItem
 		
 		// Components
 		[Module (name="MultiAccountManager")]
@@ -28,6 +29,7 @@ package {
 		
 		// Constants
 		private const sendPVKey:String = "mac_sendPV"
+		private const itemIndexCode:String = String.fromCharCode(65532);
 		
 		//::///////////////////////////////////////////////////////////
 		//::// Public methods
@@ -52,19 +54,36 @@ package {
 		
 		public function sendPV(infos:Object) : void
 		{
-			if (playerApi.getPlayedCharacterInfo().id == infos.senderId)
+			var objects:Vector.<Object> = infos.objects;
+			var message:String = infos.message;
+			var senderId:int = infos.senderId;
+			var receiverId:int = infos.receiverId;
+			
+			if (playerApi.getPlayedCharacterInfo().id == senderId)
 				return;
 				
-			if (playerApi.getPlayedCharacterInfo().id == infos.receiverId)
+			if (playerApi.getPlayedCharacterInfo().id == receiverId)
 				return;
+			
+			/* Disabled
+			if (objects.length)
+			{
+				var position:int;
+				for (var ii:int = 0;  ii < objects.length; ii++)
+				{
+					position = message.indexOf(itemIndexCode);
+					if (position == -1)
+						break;
+					
+					message = message.substr(0, position)
+						+ this.chatApi.newChatItem(objects[ii])
+						+ message.substr(position + 1);
+				}
+			}
 			// */
-				
-			//infos.message = chatApi.unEsca
 			
 			sysApi.sendAction(new FightOutput(
-					"de <b>" + infos.senderName + "</b> à <b>" +
-						infos.receiverName + "</b>: " +
-						infos.message,
+					message,
 					ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE
 					));
 		}
@@ -153,24 +172,25 @@ package {
 		{
 			if (channel != ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE)
 				return;
-				
-			var infos:InfosMessage = new InfosMessage();
-			infos.message = message;
 			
-			if (senderId != 0)
-				infos.senderName = senderName;
-			else
-				infos.senderName = playerApi.getPlayedCharacterInfo().name;
+			if (senderId == 0)
+				senderName = playerApi.getPlayedCharacterInfo().name;
 			
+			if (receiverId == 0)
+				receiverName = playerApi.getPlayedCharacterInfo().name;
+			
+			var infos:Object = new Object();
 			infos.senderId = senderId;
-			
-			if (receiverId != 0)
-				infos.receiverName = receiverName;
-			else
-				infos.receiverName = playerApi.getPlayedCharacterInfo().name;
-			
 			infos.receiverId = receiverId;
-				
+			infos.message = "de <b>" + senderName + "</b> à <b>" + receiverName
+				+ "</b>: " + message;
+			
+			var objectsTmp:Vector.<ItemWrapper> = new Vector.<ItemWrapper>();
+			for each (var item:ItemWrapper in objects)
+				objectsTmp.push(item);
+			
+			infos.objects = objectsTmp;
+			
 			modMAM.sendOther(sendPVKey, infos);
 		}
 			
@@ -184,14 +204,4 @@ package {
 			sysApi.log(2, str);
 		}
 	}
-}
-
-class InfosMessage extends Object
-{
-	public var message:String;
-	public var senderName:String;
-	public var senderId:int;
-	public var receiverName:String;
-	public var receiverId:int;
-	public var links:Object;
 }
