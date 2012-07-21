@@ -33,7 +33,7 @@ package
 		private const itemIndexCode:String = String.fromCharCode(65532);
 		
 		//::///////////////////////////////////////////////////////////
-		//::// Public methods
+		//::// Methods
 		//::///////////////////////////////////////////////////////////
 		
 		public function main():void
@@ -89,6 +89,36 @@ package
 				ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE));
 		}
 		
+		private function processLine(channel:int, senderId:int,
+			senderName:String, receiverId:int, receiverName:String,
+			message:String, timestamp:Number, fingerprint:String,
+			objects:Object = null, isSpeakingItem:Boolean = false,
+			isAdmin:Boolean = false):void
+		{
+			if (channel != ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE)
+				return;
+			
+			if (senderId == 0)
+				senderName = playerApi.getPlayedCharacterInfo().name;
+			
+			if (receiverId == 0)
+				receiverName = playerApi.getPlayedCharacterInfo().name;
+			
+			var infos:Object = new Object();
+			infos.senderId = senderId;
+			infos.receiverId = receiverId;
+			infos.message = "de <b>" + senderName + "</b> à <b>" + receiverName
+				+ "</b>: " + message;
+			
+			var objectsTmp:Vector.<ItemWrapper> = new Vector.<ItemWrapper>();
+			for each (var item:ItemWrapper in objects)
+				objectsTmp.push(item);
+			
+			infos.objects = objectsTmp;
+			
+			modMAM.sendOther(sendPVKey, infos);
+		}
+		
 		//::///////////////////////////////////////////////////////////
 		//::// Events
 		//::///////////////////////////////////////////////////////////
@@ -132,36 +162,6 @@ package
 		{
 			processLine(channel, 0, "", receiverId, receiverName, message,
 				timestamp, fingerprint, objects);
-		}
-		
-		private function processLine(channel:int, senderId:int,
-			senderName:String, receiverId:int, receiverName:String,
-			message:String, timestamp:Number, fingerprint:String,
-			objects:Object = null, isSpeakingItem:Boolean = false,
-			isAdmin:Boolean = false):void
-		{
-			if (channel != ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE)
-				return;
-			
-			if (senderId == 0)
-				senderName = playerApi.getPlayedCharacterInfo().name;
-			
-			if (receiverId == 0)
-				receiverName = playerApi.getPlayedCharacterInfo().name;
-			
-			var infos:Object = new Object();
-			infos.senderId = senderId;
-			infos.receiverId = receiverId;
-			infos.message = "de <b>" + senderName + "</b> à <b>" + receiverName
-				+ "</b>: " + message;
-			
-			var objectsTmp:Vector.<ItemWrapper> = new Vector.<ItemWrapper>();
-			for each (var item:ItemWrapper in objects)
-				objectsTmp.push(item);
-			
-			infos.objects = objectsTmp;
-			
-			modMAM.sendOther(sendPVKey, infos);
 		}
 		
 		//::///////////////////////////////////////////////////////////
