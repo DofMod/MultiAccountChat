@@ -2,6 +2,7 @@ package
 {
 	import d2actions.FightOutput;
 	import d2api.ChatApi;
+	import d2api.DataApi;
 	import d2api.PlayedCharacterApi;
 	import d2api.SystemApi;
 	import d2data.ItemWrapper;
@@ -14,7 +15,8 @@ package
 	import flash.display.Sprite;
 	
 	/**
-	 * The main class of the module. Dispatch the dialogues through the different accounts.
+	 * The main class of the module. Dispatch the dialogues through the
+	 * different accounts.
 	 * 
 	 * @author Relena
 	 */
@@ -37,6 +39,10 @@ package
 		 * @private
 		 */
 		public var chatApi:ChatApi; // newChatItem
+		/**
+		 * @private
+		 */
+		public var dataApi:DataApi; // getItemWrapper
 		
 		// Components
 		[Module(name = "MultiAccountManager")]
@@ -86,7 +92,7 @@ package
 		 * @param	objects	Objects' links in the message.
 		 */
 		public function sendPV(senderId:int, receiverId:int, message:String,
-			objects:Vector.<Object>):void
+			objectsGID:Array):void
 		{	
 			if (playerApi.getPlayedCharacterInfo().id == senderId)
 				return;
@@ -94,22 +100,20 @@ package
 			if (playerApi.getPlayedCharacterInfo().id == receiverId)
 				return;
 			
-			/* Disabled
-			if (objects.length)
+			if (objectsGID.length)
 			{
 				var position:int;
-				for (var ii:int = 0;  ii < objects.length; ii++)
+				for each (var GID:int in objectsGID)
 				{
 					position = message.indexOf(itemIndexCode);
 					if (position == -1)
 						break;
 					
 					message = message.substr(0, position)
-						+ this.chatApi.newChatItem(objects[ii])
+						+ chatApi.newChatItem(dataApi.getItemWrapper(GID))
 						+ message.substr(position + 1);
 				}
 			}
-			// */
 			
 			sysApi.sendAction(new FightOutput(
 				message,
@@ -152,11 +156,11 @@ package
 				+ receiverId + "," + timestamp + "," + fingerprint + ","
 				+ channel + "::<b>" + receiverName + "</b>}: " + message;
 			
-			var objsTmp:Vector.<ItemWrapper> = new Vector.<ItemWrapper>();
-			for each (var item:ItemWrapper in objects)
-				objsTmp.push(item);
+			var objsGID:Array = new Array();
+			for each (var object:ItemWrapper in objects)
+				objsGID.push(object.objectGID);
 			
-			modMAM.sendOther(sendPVKey, senderId, receiverId, message, objsTmp);
+			modMAM.sendOther(sendPVKey, senderId, receiverId, message, objsGID);
 		}
 		
 		//::///////////////////////////////////////////////////////////
