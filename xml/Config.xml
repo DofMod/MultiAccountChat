@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Definition>
 	<Import url="mod://Ankama_Config/ui/template/configCheckbox.xml" />
-	
+
 	<Constants>
 		<Constant name="assets" value="[config.ui.skin]assets.swf|" />
 		<Constant name="css" value="[config.ui.skin]css/" />
 	</Constants>
 
 	<Container name="configUiCtr">
-		
+
 		<!-- Label title1 -->
 
 		<Label name="lbl_title1">
@@ -23,7 +23,7 @@
 			<text>Messages</text>
 			<css>[local.css]titleSmall.css</css>
 		</Label>
-		
+
 		<!-- Texture tx_bgForeground1-->
 
 		<Texture name="tx_bgForeground1">
@@ -69,8 +69,6 @@
 			<uri>[local.assets]tx_darkBg</uri>
 		</Texture>
 
-		<!-- Checkbox container1 -->
-		
 		<Container>
 			<Anchors>
 				<Anchor relativeTo="tx_bgForeground1">
@@ -80,16 +78,14 @@
 			<Size>
 				<AbsDimension x="20" y="10" />
 			</Size>
-		
-			<configCheckbox name="checkbox_mp"     text="Partager les messages privés (/w)"      uri="[local.assets]tx_light_checkbox"/>
-			<configCheckbox name="checkbox_group"  text="Partager les messages de groupe (/p)"   uri="[local.assets]tx_light_checkbox"/>
-			<configCheckbox name="checkbox_team"   text="Partager les messages d'équipe (/t)"    uri="[local.assets]tx_light_checkbox"/>
-			<configCheckbox name="checkbox_kolize" text="Partager les messages de kolizeum (/k)" uri="[local.assets]tx_light_checkbox"/>
-			<configCheckbox name="checkbox_guilde" text="Partager les messages de guilde (/g)"   uri="[local.assets]tx_light_checkbox"/>
+
+			<configCheckbox name="btn_pv"     text="Partager les messages privés (/w)"      uri="[local.assets]tx_light_checkbox"/>
+			<configCheckbox name="btn_party"  text="Partager les messages de groupe (/p)"   uri="[local.assets]tx_light_checkbox"/>
+			<configCheckbox name="btn_guild"  text="Partager les messages de guilde (/g)"   uri="[local.assets]tx_light_checkbox"/>
+			<configCheckbox name="btn_team"   text="Partager les messages d'équipe (/t)"    uri="[local.assets]tx_light_checkbox"/>
+			<configCheckbox name="btn_kolize" text="Partager les messages de kolizeum (/k)" uri="[local.assets]tx_light_checkbox"/>
 		</Container>
-		
-		<!-- Checkbox container2 -->
-		
+
 		<Container>
 			<Anchors>
 				<Anchor relativeTo="tx_bgForeground2">
@@ -99,12 +95,11 @@
 			<Size>
 				<AbsDimension x="20" y="10" />
 			</Size>
-		
-			<configCheckbox name="checkbox_pseudo"     text="Partager les messages contenant mon pseudo"          uri="[local.assets]tx_light_checkbox"/>
-			<!-- Partager les messages contenant les mots suivants : XX XX XX -->
-			<configCheckbox name="checkbox_server"     text="Partager les messages entre les différents serveurs" uri="[local.assets]tx_light_checkbox"/>
-			<configCheckbox name="checkbox_serverName" text="Afficher nom du serveur d'origine"                   uri="[local.assets]tx_light_checkbox" offset="40"/>
-			<configCheckbox name="checkbox_info"       text="Partager les messages d'informations (vente, ...)"   uri="[local.assets]tx_light_checkbox" offset="-40"/>
+
+			<configCheckbox name="btn_pseudo" text="Partager les messages contenant mon pseudo"                                       uri="[local.assets]tx_light_checkbox"/>
+			<configCheckbox name="btn_word"   text="Partager les messages contenant le mot : ..."                                   uri="[local.assets]tx_light_checkbox"/>
+			<configCheckbox name="btn_server" text="Afficher le nom du serveur dans les messages partagés"                            uri="[local.assets]tx_light_checkbox"/>
+			<configCheckbox name="btn_info"   text="Partager les messages d'information (vente, agression, invitation, échange, ...)" uri="[local.assets]tx_light_checkbox"/>
 		</Container>
 	</Container>
 </Definition>
