@@ -51,6 +51,12 @@ package
 		 */
 		public var modMAM:Object; // modMultiAccountManager
 		
+		[Module(name = "Ankama_Common")]
+		/**
+		 * Ankama_Common module reference.
+		 */
+		public var modCommon:Object;
+		
 		// Constants
 		private const sendPVKey:String = "mac_sendPV"
 		private const itemIndexCode:String = String.fromCharCode(65532);
@@ -168,11 +174,16 @@ package
 		//::///////////////////////////////////////////////////////////
 		
 		/**
-		 * GameStart event handler. Register the functions' keys.
+		 * GameStart event handler. Register the functions' keys & create config
+		 * menu.
 		 */
 		private function onGameStart():void
 		{
 			modMAM.register(sendPVKey, this.sendPV);
+			modCommon.addOptionItem("module_multiaccountchat",
+				"Module - Multi Account Chat",
+				"Ces options servent à configurer le module MultiAccountChat",
+				"MultiAccountChat::Config");
 		}
 		
 		/**
